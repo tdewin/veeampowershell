@@ -1,0 +1,56 @@
+<#
+ @tdewin
+#>
+Add-PSSnapin veeampssnapin
+
+function cleanup {
+ Param($dummyjob=0,$repository=0,$vsbjob=0,$appgroup=0)
+ if($vsbjob -ne 0) {
+	Remove-VSBJob -Job $vsbjob -Confirm:$False
+ }
+ if($appgroup -ne 0) {
+	Remove-VSBApplicationGroup -AppGroup $appgroup -Confirm:$false
+ }
+ if($dummyjob -ne 0) {
+	Remove-VBRJob -Job $dummyjob -Confirm:$False
+ }
+ if($repository -ne 0) {
+	Remove-VBRBackupRepository -Repository $repository -Confirm:$False
+ }
+}
+
+$tenantjobfolder = "E:\CCTest\CBTEST"
+$reposerver = Get-VBRServer -name "This Server"
+$type = "WinLocal"
+$dummyvm = Find-VBRViEntity -VMsAndTemplates -Name "__dummyvm"
+
+
+$suffix = ("{0}_{1}" -f ($reposerver.RealName -replace "[^a-zA-Z]",""),($tenantjobfolder -replace "[^a-zA-Z]",""))
+$repositoryname = ("CCRepo_{0}" -f $suffix)
+$dummyjobname = ("JobCC_{0}" -f $suffix)
+$appgroupname = ("App_{0}" -f $suffix)
+$vsbjobname = ("VSB_{0}" -f $suffix)
+
+$repository = Add-VBRBackupRepository -Server $reposerver -MountServer $reposerver -ImportBackup -Folder $tenantjobfolder -Type $type -Name $repositoryname
+$mapbackup = Get-VBRBackup | ? { $_.repositoryid -eq $repository.Id }
+$dummyjob = Add-VBRViBackupJob -Entity $dummyvm -Name $dummyjobname -BackupRepository $repository -Description "Temp Mapping Job"
+$mapbackup.Update($dummyjob)
+
+
+$vsblab = Get-VSBVirtualLab
+
+#just as a linked job
+#$vsbjob = Add-VSBJob -Name $vsbjobname -VirtualLab $vsblab -LinkedJob $dummyjob
+
+$vbrpoints = Get-VBRRestorePoint -Backup $mapbackup
+$vms = $vbrpoints.VmName | Get-Unique
+$latestpoints = @($vms | % { $vm = $_; $vbrpoints | ? { $_.VmName -eq $vm } | Sort-Object -Descending -Property creationtime | select -First 1 })
+$appgroup = Add-VSBViApplicationGroup -Name $appgroupname -RestorePoint $latestpoints
+$vsbjob = Add-VSBJob -Name $vsbjobname -VirtualLab $vsblab -AppGroup $appgroup
+
+
+$result = $vsbjob | Start-VSBJob
+$result
+
+Start-Sleep -Seconds 20
+cleanup -dummyjob $dummyjob -repository $repository -vsbjob $vsbjob -appgroup $appgroup
