@@ -1,5 +1,12 @@
 <#
  @tdewin
+ 
+ No real sample code. 
+ Tested it with non imported backups in a lab.
+ Guessing for the network part, you will have to create fake vSphere portgroup that match the customer setup so that you can succesfully precreate the virtual lab 
+ (in this setup it just uses the only virtual lab that was configured). 
+ Also you need to create an empty VM called "__dummyvm" (just a vm with no disk, 4Mb ram, etc..) to create the fake job mapping.
+ 
 #>
 Add-PSSnapin veeampssnapin
 
