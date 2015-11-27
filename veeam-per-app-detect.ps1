@@ -38,13 +38,13 @@ $ids | % {
     }
 }
 
-$header = "<title>Veeam App Detection</title><style>body { font-family:arial } h1 { color:white;background-color:green; } table {border-collapse: collapse; } td,table,th { border: 1px solid black;padding:2px; } th { text-align:left; } .thVMName { width:100px; } .thFQDN { width:200px; } </style>"
+$header = "<title>Veeam App Detection</title><style>body { font-family:arial } h1 { color:white;background-color:green; } table {border-collapse: collapse; } td,table,th { border: 1px solid black;padding:2px; } th { text-align:left; width:200px; } </style>" 
 $html = ""
 $applist.Keys | Sort-Object | % {
     $apptab = $applist[$_]
     if($apptab.Count -gt 0) {
         $html += ("<h1>{0}</h1>" -f ($_ -replace "^Has",""))
-        $html += ( $apptab | ConvertTo-Html -Property "Detection Date","Location","VM Name","FQDN" -Fragment) -replace "<th>([^<]*)</th>",'<th class=''th$1''>$1</th>'
+        $html += ( $apptab | ConvertTo-Html -Property "Detection Date","Location","VM Name","FQDN" -Fragment)
         $html += "<br><br>"
     } 
 }  
