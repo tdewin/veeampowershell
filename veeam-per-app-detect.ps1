@@ -46,7 +46,7 @@ $applist.Keys | Sort-Object | % {
         $html += ("<h1>{0}</h1>" -f ($_ -replace "^Has",""))
         $html += ( $apptab | ConvertTo-Html -Property "Detection Date","Location","VM Name","FQDN" -Fragment) -replace "<th>([^<]*)</th>",'<th class=''th$1''>$1</th>'
         $html += "<br><br>"
-    }
+    } 
 }  
 ConvertTo-Html -head $header -Body $html > $outfile
  
