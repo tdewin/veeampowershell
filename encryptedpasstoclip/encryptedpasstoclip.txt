@@ -1,0 +1,14 @@
+-Adjust the cmd to run as the user you want by editing the bat file
+-Second password will be encrypted and be put on your clipboard
+
+
+Powershell got encoded with reference below. Here is the coded that was encoded:
+"read-host -Prompt Password -AsSecureString | Convertfrom-securestring | clip"
+
+https://www.safaribooksonline.com/library/view/windows-powershell-cookbook/9780596528492/ch01s08.html
+########################
+$commands = '1..10 | % { "PowerShell Rocks" }'
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($commands)
+$encodedString = [Convert]::ToBase64String($bytes)
+
+PowerShell -EncodedCommand $encodedString
