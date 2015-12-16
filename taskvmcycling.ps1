@@ -21,7 +21,7 @@ if($VbrObjs.Count -lt $NumberofVMs) { $NumberofVMs = $VbrObjs.Count }
 # Go over the file (% { } == foreach-object). If the line is not empty, and it is contained, remove it from the potential list
 Get-Content $cacheFile | % { 
     $vmname = $_
-    if ($oid -ne "") {
+    if ($vmname -ne "") {
         $toremove = $VbrObjsArrayList | ? { $_.name -eq $vmname }
         $toremove | % { $VbrObjsArrayList.Remove($_) }
     }
