@@ -35,7 +35,6 @@ $reset = $false
 if($VbrObjsArrayList.Count -gt $NumberofVMs) {
     $TestVMs = $VbrObjsArrayList | get-random -Count $NumberofVMs
 } else {
-    write-host "Cycled"
     $TestVMs = $VbrObjsArrayList
     $reset = $true
 }
@@ -46,7 +45,6 @@ $VsbJob = Add-VSBJob -Name $SbJobName -VirtualLab $VirtualLab -AppGroup $AppGrou
 
 if($reset) {
    "" > $cacheFile
-   $TestVMs | % { Add-Content $cacheFile ("`n{0}" -f $_.name ) }
 } else {
     $TestVMs | % { Add-Content $cacheFile ("`n{0}" -f $_.name )}
 }
