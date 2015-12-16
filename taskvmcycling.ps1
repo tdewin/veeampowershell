@@ -31,7 +31,7 @@ Get-Content $cacheFile | % {
 $TestVMs = @()
 $reset = $false
 # If the potential list is bigger than the number of VMs, select just random of VMs from the list
-# Else almost all VMs have already been tested. Select all remaing VMs and fill up with the new VMs and reset the list (reset write to the files without appending)
+# Else almost all VMs have already been tested. Select all remaing VMs and reset the file
 if($VbrObjsArrayList.Count -gt $NumberofVMs) {
     $TestVMs = $VbrObjsArrayList | get-random -Count $NumberofVMs
 } else {
