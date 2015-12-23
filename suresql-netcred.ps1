@@ -5,6 +5,7 @@ param(
     $minimumdb = 4
 )
 
+
 $connectionString = "Server=$instancefull;Integrated Security=True;"
 
 $connection = New-Object System.Data.SqlClient.SqlConnection
@@ -12,35 +13,42 @@ $connection.ConnectionString = $connectionString
 
 $failure = 1
 
-$q = @'
-SELECT name, database_id, state
-FROM sys.databases ;
-'@
+#ugly fix to touch all dbs, otherwise it shows corrupted db's as online :(
+$useall = 'EXECUTE master.sys.sp_MSforeachdb ''USE [?];'''
+$q = 'use master;SELECT name, state FROM sys.databases;'
+
 
 try {
     $connection.Open()
 
     
     $cmd = $connection.CreateCommand()
+    $cmd.CommandText = $useall
+    $cmd.ExecuteNonQuery()
+
+    $cmd = $connection.CreateCommand()
     $cmd.CommandText = $q
 
-    $datatable = New-Object System.Data.DataTable
     $reader = $cmd.ExecuteReader()
-    $datatable.Load($reader)
+    $datatable = @()
+    while($reader.Read())
+    {
+        $datatable += New-Object -TypeName psobject -Property @{name=$reader["name"];state=$reader["state"];}
+    }
 
     $connection.Close()
     
-    if($datatable.Rows.Count -ge $minimumdb) {
+    if($datatable.Count -ge $minimumdb) {
         $allonline = $true
         $off = @()
-        $datatable.Rows | % {
-            if ( $_[2] -eq 0 ) {
-                write-host ("online : {0}" -f $_[0])
+        $datatable | % {
+            if ( $_.state -eq 0 ) {
+                write-host ("online : {0}" -f $_.name)
             } else {
                 $allonline = $false
                 #state codes : https://msdn.microsoft.com/en-us/library/ms178534.aspx
-                write-host ("code {0} : {1}" -f $_[2],$_[0])
-                $off += $_[0]
+                write-host ("code {0} : {1}" -f $_.state,$_.name)
+                $off += $_.name
             }
         }
         if ($allonline) { $failure = 0; write-host ("All {0} databases online !" -f $datatable.count) } 
