@@ -49,12 +49,12 @@ try {
         $failure = 1;write-host ("Query should at least give back {0} databases" -f $minimumdb)
     }
 } catch {
-    write-host ("Query failed or could not open connection {0} " -f $error[0])
+    write-host ("Query failed or could not open connection {1} : {0} " -f $error[0],$connectionString)
     $failure = 1
 } finally {
     $connection.Close()
 }
 
-#write-host $failure
-#sleep -Seconds 5
+write-host $failure
+sleep -Seconds 5
 exit $failure
