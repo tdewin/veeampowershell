@@ -1,10 +1,11 @@
 param(
 	$server = "localhost",
-	$instance = "$server\MSSQLSERVER",
+    $instance = "MSSQLSERVER",
+	$instancefull = "$server\$instance",
     $minimumdb = 4
 )
 
-$connectionString = "Server=$instance;Integrated Security=True;"
+$connectionString = "Server=$instancefull;Integrated Security=True;"
 
 $connection = New-Object System.Data.SqlClient.SqlConnection
 $connection.ConnectionString = $connectionString
