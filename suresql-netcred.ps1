@@ -4,7 +4,7 @@ param(
 	$instancefull = "$server\$instance",
     $minimumdb = 4
 )
-
+#$instancefull = "manual\override"
 
 $connectionString = "Server=$instancefull;Integrated Security=True;"
 
@@ -93,6 +93,5 @@ try {
     $connection.Close()
 }
 
-write-host $failure
-sleep -Seconds 5
+
 exit $failure
