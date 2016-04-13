@@ -1,4 +1,5 @@
 ﻿#self signed error dismiss
+#http://www.datacore.com/RESTSupport-Webhelp/using_windows_powershell_as_a_rest_client.htm
 add-type @"
     using System.Net;
     using System.Security.Cryptography.X509Certificates;
