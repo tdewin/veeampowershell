@@ -10,7 +10,7 @@ while ( 1 -eq 1 ) {
     
     #disk
     $dbs = $new.DiskBytesPersec - $old.DiskBytesPersec
-    $time = ($new.Timestamp_Sys100NS-$old.Timestamp_Sys100NS)*10e-8
+    $time = ($new.Timestamp_Sys100NS-$old.Timestamp_Sys100NS)*1e-7
     $kdbs = $dbs/1024 
     write-host ("Disk : {0}`t`t{1}" -f ($kdbs/$time),$time)
 
@@ -23,7 +23,7 @@ while ( 1 -eq 1 ) {
         if ($oldif.Count -gt 0) {
             $oldif = $oldif[0]
             #Write-Host ("{0} {1}" -f $newif.name,$oldif.name )
-            $nettime = ($newif.Timestamp_Sys100NS-$oldif.Timestamp_Sys100NS)*10e-8
+            $nettime = ($newif.Timestamp_Sys100NS-$oldif.Timestamp_Sys100NS)*1e-7
             $totalbytes += ($newif.BytesTotalPersec - $oldif.BytesTotalPersec)/$nettime
 
         }
