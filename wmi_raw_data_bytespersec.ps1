@@ -24,7 +24,7 @@ while ( 1 -eq 1 ) {
             $oldif = $oldif[0]
             #Write-Host ("{0} {1}" -f $newif.name,$oldif.name )
             $nettime = ($newif.Timestamp_Sys100NS-$oldif.Timestamp_Sys100NS)*10e-8
-            $totalbytes += ($newif.BytesReceivedPersec - $oldif.BytesReceivedPersec)/$nettime
+            $totalbytes += ($newif.BytesTotalPersec - $oldif.BytesTotalPersec)/$nettime
 
         }
     }
